@@ -72,7 +72,6 @@ def get_masks(roi_pts):
 
 def get_fibers(evx, evy, masks, fa):
     # initialize
-    fiber_dir = np.zeros(2)
     fiber_coords = np.zeros((6,2))
     
     for p in range(3):
@@ -80,10 +79,7 @@ def get_fibers(evx, evy, masks, fa):
         mask_indices = np.argwhere(result.masks[p, :, :] == 1)
         mask_indices[:, [1, 0]] = mask_indices[:, [0, 1]]
         centroid = np.mean(mask_indices, axis=0)
-        centroid = np.array(centroid, dtype=np.int32)
-        
-        # get bounds
-        
+                
         # apply region mask and Fractional Anisotropy filter to eigenvectors
         reg_evx = evx * masks[p,:,:] * (fa > 0.15)
         reg_evy = evy * masks[p,:,:] * (fa > 0.15)
@@ -98,38 +94,34 @@ def get_fibers(evx, evy, masks, fa):
         reg_evx[wrong_dir_idx] = reg_evx[wrong_dir_idx] * -1
         
         # get fiber slope in each region
-        fiber_dir[0] = np.mean(reg_evx)
-        fiber_dir[1] = np.mean(reg_evy)
-        fiber_dir = fiber_dir / np.max(np.absolute(fiber_dir)) # normalize
         fiber_slope = np.mean(reg_evy) / np.mean(reg_evx)
         
-        # get fiber endpoints (intesection of fiber line and region boundary)
+        # get x direction pixel numbers
         xmin = np.amin(mask_indices[:,0])
         xmax = np.amax(mask_indices[:,0])
-        xlen = (xmax - xmin) // 2;
+        x = np.arange(xmin, xmax+1, 1)  
         
-        x = np.zeros(xlen * 2)
-        y = np.zeros(xlen * 2)
+        # draw fiber lines
+        y = centroid[1] + fiber_slope * (x - centroid[0])
+        xy = np.array([x,y], dtype=np.int32).transpose()
         
-        x[:xlen] = centroid[0] - fiber_dir[0] * np.linspace(1,xlen / fiber_dir[0],xlen)
-        x[xlen:] = centroid[0] + fiber_dir[0] * np.linspace(1,xlen / fiber_dir[0],xlen)
-        y[:xlen] = centroid[1] - fiber_dir[1] * np.linspace(1,xlen,xlen)
-        y[xlen:] = centroid[1] + fiber_dir[1] * np.linspace(1,xlen,xlen)
+        # determine fiber line points within region
+        matches = (xy[:,None] == mask_indices).all(-1).any(-1)
+        xy_matches = xy[matches]
+        
+        # select proximal & distal most coordinates as fiber endpoints
+        fiber_coords[2*p-1, :] = xy_matches[0,:]
+        fiber_coords[2*p, :] = xy_matches[-1,:]
         
         
         plt.imshow(masks[p,:,:])
-        plt.plot(x,y,'-r')
+        plt.plot(xy_matches[:,0],xy_matches[:,1],'-r')
         plt.plot(centroid[0], centroid[1], 'or')
         plt.show()
 
-        
     return fiber_coords
         
     
-
-
-
-
 # test
 import scipy.io
 dti = scipy.io.loadmat('BC_DTI_D.mat')
@@ -153,3 +145,7 @@ result.roi = np.array([[151,  39],
                    [151,  39]])
 result.masks = get_masks(result.roi)
 result.fibers = get_fibers(evx, evy, result.masks, fa)
+
+# clean up
+# write test function
+# try to understand how row comparison works
