@@ -72,11 +72,13 @@ def get_masks(roi_pts):
 
 def get_fibers(evx, evy, masks, fa):
     # initialize
+    fiber_dir = np.zeros(2)
     fiber_coords = np.zeros((6,2))
     
     for p in range(3):
         # get centroids
         mask_indices = np.argwhere(result.masks[p, :, :] == 1)
+        mask_indices[:, [1, 0]] = mask_indices[:, [0, 1]]
         centroid = np.mean(mask_indices, axis=0)
         centroid = np.array(centroid, dtype=np.int32)
         
@@ -95,12 +97,31 @@ def get_fibers(evx, evy, masks, fa):
         reg_evy[wrong_dir_idx] = reg_evy[wrong_dir_idx] * -1
         reg_evx[wrong_dir_idx] = reg_evx[wrong_dir_idx] * -1
         
-        # get fiber directions in each region
-        fiber_dir = np.mean(reg_evx)
-        fiber_dir = np.mean(reg_evy)
+        # get fiber slope in each region
+        fiber_dir[0] = np.mean(reg_evx)
+        fiber_dir[1] = np.mean(reg_evy)
+        fiber_dir = fiber_dir / np.max(np.absolute(fiber_dir)) # normalize
+        fiber_slope = np.mean(reg_evy) / np.mean(reg_evx)
         
         # get fiber endpoints (intesection of fiber line and region boundary)
+        xmin = np.amin(mask_indices[:,0])
+        xmax = np.amax(mask_indices[:,0])
+        xlen = (xmax - xmin) // 2;
         
+        x = np.zeros(xlen * 2)
+        y = np.zeros(xlen * 2)
+        
+        x[:xlen] = centroid[0] - fiber_dir[0] * np.linspace(1,xlen / fiber_dir[0],xlen)
+        x[xlen:] = centroid[0] + fiber_dir[0] * np.linspace(1,xlen / fiber_dir[0],xlen)
+        y[:xlen] = centroid[1] - fiber_dir[1] * np.linspace(1,xlen,xlen)
+        y[xlen:] = centroid[1] + fiber_dir[1] * np.linspace(1,xlen,xlen)
+        
+        
+        plt.imshow(masks[p,:,:])
+        plt.plot(x,y,'-r')
+        plt.plot(centroid[0], centroid[1], 'or')
+        plt.show()
+
         
     return fiber_coords
         
