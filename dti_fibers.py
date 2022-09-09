@@ -1,11 +1,10 @@
 import numpy as np
-import matplotlib.pyplot as plt
 import cv2
 
 
 class DtiFiber:
-    def __init__(self):
-        self.roi = []
+    def __init__(self, name):
+        self.name = name
 
 
 def click_event(event, x, y, flags, params):
@@ -29,9 +28,6 @@ def get_roi(img):
     cv2.waitKey(0)        
     cv2.destroyAllWindows()
     roi = np.append(roi, [roi[0,:]], axis=0) #close polygon
-    
-    plt.imshow(img, cmap='gray')
-    plt.plot(roi[:,0], roi[:,1],'-ob')
     return roi
 
 
@@ -71,12 +67,10 @@ def get_masks(roi_pts):
 
 
 def get_fibers(evx, evy, masks, fa):
-    # initialize
     fiber_coords = np.zeros((6,2))
-    
     for p in range(3):
         # get centroids
-        mask_indices = np.argwhere(result.masks[p, :, :] == 1)
+        mask_indices = np.argwhere(masks[p, :, :] == 1)
         mask_indices[:, [1, 0]] = mask_indices[:, [0, 1]]
         centroid = np.mean(mask_indices, axis=0)
                 
@@ -110,45 +104,18 @@ def get_fibers(evx, evy, masks, fa):
         xy_matches = xy[matches]
         
         # select proximal & distal most coordinates as fiber endpoints
-        fiber_coords[2*p-1, :] = xy_matches[0,:]
         fiber_coords[2*p, :] = xy_matches[-1,:]
-        
-        
-        plt.imshow(masks[p,:,:])
-        plt.plot(xy_matches[:,0],xy_matches[:,1],'-r')
-        plt.plot(centroid[0], centroid[1], 'or')
-        plt.show()
-
+        fiber_coords[2*p+1, :] = xy_matches[0,:]
     return fiber_coords
         
     
-# test
-import scipy.io
-dti = scipy.io.loadmat('BC_DTI_D.mat')
-#data = get_dti_fibers(dti['M'], dti['X'], dti['Y'], dti['FA'])
-mag = dti['M']
-evx = dti['X']
-evy = dti['Y']
-fa = dti['FA']
+def process_dti(name, mag, evx, evy, fa):
+    result = DtiFiber(name)
+    result.roi = get_roi(mag)
+    result.masks = get_masks(result.roi)
+    result.fibers = get_fibers(evx, evy, result.masks, fa)
+    return result
 
 
 if __name__ == "__main__":
-    print('Import as module')
-
-#def get_dti_fibers(mag, evx, evy, fa):
-result = DtiFiber()
-#result.roi = get_roi(mag)
-result.roi = np.array([[151,  39],
-                   [138,  42],
-                   [148,  84],
-                   [157, 128],
-                   [165, 185],
-                   [173, 154],
-                   [165,  98],
-                   [151,  39]])
-result.masks = get_masks(result.roi)
-result.fibers = get_fibers(evx, evy, result.masks, fa)
-
-# clean up
-# write test function
-# try to understand how row comparison works
+    print('Import ')
