@@ -119,4 +119,4 @@ def main(name, mag, evx, evy, fa):
 
 
 if __name__ == "__main__":
-    print('Import ')
+    print('Import as module')
