@@ -1,11 +1,12 @@
 import dti_fibers
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
+from scipy.io import loadmat
+
 
 # test
-import scipy.io
 file = 'BC_DTI_D.mat'
 name = file[:-4]
-dti = scipy.io.loadmat('BC_DTI_D.mat')
+dti = loadmat('BC_DTI_D.mat')
 data = dti_fibers.process_dti(name, dti['M'], dti['X'], dti['Y'], dti['FA'])
 
 # show result
