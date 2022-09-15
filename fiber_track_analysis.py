@@ -4,6 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import statsmodels.api as sm
 import scipy.stats as stats
+from statsmodels.formula.api import ols
 
 
 
@@ -59,8 +60,8 @@ def interpret_data(data):
         'posn' : list('DDDDDDNNNNNNPPPPPP' * 6),
         'pct_mvc':np.tile([50,50,50,25,25,25],(18,)),
         'peak_str':peak_str.flatten(),
-        'str/force':str_force.flatten(),
-        'str/torque':str_torque.flatten(),
+        'str_force':str_force.flatten(),
+        'str_torque':str_torque.flatten(),
         'init_lens':init_lens.flatten(),
         'final_lens':final_lens.flatten(),
         'init_angs':init_angs.flatten(),
@@ -95,14 +96,39 @@ def check_normality(rslt):
     return p_sw
 
 
+def stats_norm(rslt):
+
+    p_norm = pd.DataFrame(index=['C(posn)','C(pct_mvc)','C(posn):C(pct_mvc)',\
+                                 't_dn', 't_np', 't_dp'])
+    
+    for field in rslt.columns[2:5]:
+        # two-way anova p-values
+        model = ols(field + '~ C(posn) + C(pct_mvc) + C(posn):C(pct_mvc)',\
+                    data=rslt).fit()
+        anova = sm.stats.anova_lm(model, type=2)
+        p_norm.loc[:p_norm.index[2], field] = \
+            anova.loc[:p_norm.index[2],'PR(>F)']
+        
+        # collect position data for field
+        D = rslt.loc[rslt['posn']=='D', field]
+        N = rslt.loc[rslt['posn']=='N', field]
+        P = rslt.loc[rslt['posn']=='P', field]
+        
+        # get paired t-tests p-values
+        p_norm.loc['t_dn',field] = stats.ttest_rel(D, N).pvalue
+        p_norm.loc['t_np',field] = stats.ttest_rel(N, P).pvalue
+        p_norm.loc['t_dp',field] = stats.ttest_rel(D, P).pvalue
+        
+    return p_norm
+    
 
 
 #def main():
 data = import_data()
 rslt = interpret_data(data)
-p_sw = check_normality(rslt)
+#p_sw = check_normality(rslt)
+p_norm = stats_norm(rslt)
 
-#def stats_norm(rslt):
 
 
 
