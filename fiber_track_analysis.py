@@ -7,7 +7,6 @@ import scipy.stats as stats
 from statsmodels.formula.api import ols
 
 
-
 def import_data():
     # unshelve raw data
     shelf_file = shelve.open('fiber-track-data-py')
@@ -155,12 +154,34 @@ def stats_nonorm(rslt):
         
     return p_nonorm
 
+
+def stats_mvc(mvc):
+    
+    p_mvc = {}
+    
+    # remove duplicate MVC values (same MVC for 25% & 50% data)
+    mvc = mvc[::2]
+    
+    # sort MVC data by positions D, N, P
+    D = mvc[0::3]
+    N = mvc[1::3]
+    P = mvc[2::3]
+    
+    # paired t-tests between MVC data of ankle positions
+    p_mvc['DN'] = stats.ttest_rel(D, N).pvalue
+    p_mvc['NP'] = stats.ttest_rel(N, P).pvalue
+    p_mvc['DP'] = stats.ttest_rel(D, P).pvalue
+    
+    return p_mvc
+
+
 #def main():
 data = import_data()
 rslt = interpret_data(data)
 #p_sw = check_normality(rslt)
 #p_norm = stats_norm(rslt)
-p_nonorm = stats_nonorm(rslt)
+#p_nonorm = stats_nonorm(rslt)
+#p_mvc = stats_mvc(data['mvc'])
 
 
 
