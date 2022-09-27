@@ -98,7 +98,8 @@ def check_normality(rslt):
 
 def stats_norm(rslt):
 
-    p_norm = pd.DataFrame(index=['C(posn)','C(pct_mvc)','C(posn):C(pct_mvc)',\
+    p_norm = pd.DataFrame(index=['C(posn)','C(pct_mvc)',
+                                 'C(posn):C(pct_mvc)',
                                  't_dn', 't_np', 't_dp'])
     
     for field in rslt.columns[2:5]:
@@ -109,7 +110,7 @@ def stats_norm(rslt):
         p_norm.loc[:p_norm.index[2], field] = \
             anova.loc[:p_norm.index[2],'PR(>F)']
         
-        # collect position data for field
+        # collect positional data for the field
         D = rslt.loc[rslt['posn']=='D', field]
         N = rslt.loc[rslt['posn']=='N', field]
         P = rslt.loc[rslt['posn']=='P', field]
@@ -122,12 +123,44 @@ def stats_norm(rslt):
     return p_norm
     
 
+def stats_nonorm(rslt):
+    
+    p_nonorm = pd.DataFrame(index=['ang_dn_mw','ang_np_mw','ang_dp_mw',
+                                   'ang_dn_kw','ang_np_kw','ang_dp_kw',
+                                   'mvc_mw',])
+    
+    for field in rslt.columns[5:]:
+        
+        # collect positional data for the field
+        D = rslt.loc[rslt['posn']=='D', field]
+        N = rslt.loc[rslt['posn']=='N', field]
+        P = rslt.loc[rslt['posn']=='P', field]
+        
+        # collect exertion level data for the field
+        mvc50 = rslt.loc[rslt['pct_mvc']==50, field]
+        mvc25 = rslt.loc[rslt['pct_mvc']==25, field]
+        
+        # Ankle angles using Mann-Whitney
+        _, p_nonorm.loc['ang_dn_mw',field] = stats.mannwhitneyu(D, N)
+        _, p_nonorm.loc['ang_np_mw',field] = stats.mannwhitneyu(N, P)
+        _, p_nonorm.loc['ang_dp_mw',field] = stats.mannwhitneyu(D, P)
+        
+        # Ankle Angles using Kruskal-Wallis
+        p_nonorm.loc['ang_dn_kw',field] = stats.kruskal(D, N).pvalue
+        p_nonorm.loc['ang_np_kw',field] = stats.kruskal(N, P).pvalue
+        p_nonorm.loc['ang_dp_kw',field] = stats.kruskal(D, P).pvalue
+        
+        # 25% vs 50% MVC using Mann-Whitney (aka Wilcoxon Rank Sum)
+        _, p_nonorm.loc['mvc_mw',field] = stats.mannwhitneyu(mvc50, mvc25)
+        
+    return p_nonorm
 
 #def main():
 data = import_data()
 rslt = interpret_data(data)
 #p_sw = check_normality(rslt)
-p_norm = stats_norm(rslt)
+#p_norm = stats_norm(rslt)
+p_nonorm = stats_nonorm(rslt)
 
 
 
