@@ -175,6 +175,60 @@ def stats_mvc(mvc):
     return p_mvc
 
 
+def fiber_cycle_plot(subject, angs, lens, strains):
+    
+    # compute deltas
+    del_lens = lens - lens[:,:,0][:,:,None]
+    del_angs = angs - angs[:,:,0][:,:,None]
+    
+    # average results for proximal, middle, and distal fibers
+    del_lens = np.mean(del_lens, axis=1)
+    del_angs = np.mean(del_angs, axis=1)
+    strains = np.mean(strains, axis=1)
+    
+    # convert frames (22) to percent of cycle
+    x = np.arange(0,100+(100/21),100/21) 
+    
+    # plot
+    i = 1
+    posn = 'D N P'
+    plt.figure(figsize=(9,9))
+    for p in [0,2,4]:
+        
+        # plot delta angle
+        plt.subplot(3,3,i)
+        plt.plot(x, del_angs[p,:], x, del_angs[p+1,:])
+        plt.title(posn[p])
+        plt.xlabel('% Contraction cycle')
+        plt.ylabel('\u0394 Fiber angle (\u00b0)')
+        plt.ylim((-5, 10))
+        
+        # plot delta lengths
+        plt.subplot(3,3,i+1)
+        plt.plot(x, del_lens[p,:], x, del_lens[p+1,:])
+        plt.title(posn[p])
+        plt.xlabel('% Contraction cycle')
+        plt.ylabel('\u0394 Fiber length (mm)')
+        plt.ylim((-15, 5))
+        
+        # plot strains
+        plt.subplot(3,3,i+2)
+        plt.plot(x, strains[p,:], x, strains[p+1,:])
+        plt.title(posn[p])
+        plt.xlabel('% Contraction cycle')
+        plt.ylabel('Fiber strain')
+        plt.ylim((-.5, .1))
+        
+        # start subplot index at next row
+        i+=3
+    
+    # save plot as image
+    plt.tight_layout()
+    plt.savefig(subject + ' plots.png')
+    plt.show()
+
+
+
 #def main():
 data = import_data()
 rslt = interpret_data(data)
@@ -182,6 +236,14 @@ rslt = interpret_data(data)
 #p_norm = stats_norm(rslt)
 #p_nonorm = stats_nonorm(rslt)
 #p_mvc = stats_mvc(data['mvc'])
+
+# plots
+for i in range(0,36,6):
+    # fiber_cycle_plot(data['id'][i][:9], data['angs'][i:i+6,:,:],
+    #                  data['lens'][i:i+6,:,:], data['strains'][i:i+6,:,:])
+    
+    
+    
 
 
 
