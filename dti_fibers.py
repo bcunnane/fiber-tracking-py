@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+from scipy.ndimage import binary_erosion
 
 
 class DtiFiber:
@@ -31,10 +32,10 @@ def get_roi(img):
     return roi
 
 
-def get_masks(roi_pts):
+def get_masks(roi_pts, im_size):
     
     # get mask for entire muscle ROI
-    muscle_mask = np.zeros((256,256), dtype=np.uint8)
+    muscle_mask = np.zeros((im_size,im_size), dtype=np.uint8)
     cv2.fillPoly( muscle_mask, np.array([roi_pts], dtype=np.int32), 1)
     
     # get muscle top (proximalRegion_proximal) & bottom (distalRegion_distal)
@@ -63,6 +64,9 @@ def get_masks(roi_pts):
     region_masks[0, :pr_di, :] = muscle_mask[:pr_di, :]
     region_masks[1, pr_di:di_pr, :] = muscle_mask[ pr_di:di_pr, :]
     region_masks[2, di_pr:, :] = muscle_mask[di_pr:, :]
+
+    for i in range(3):
+        region_masks[i,:,:] = binary_erosion(region_masks[i,:,:], structure=np.ones((3,3)))
     return region_masks
 
 
@@ -93,7 +97,7 @@ def get_fibers(evx, evy, masks, fa):
         # get x direction pixel numbers
         xmin = np.amin(mask_indices[:,0])
         xmax = np.amax(mask_indices[:,0])
-        x = np.arange(xmin, xmax+1, 1)  
+        x = np.linspace(xmin, xmax+1, 250)
         
         # draw fiber lines
         y = centroid[1] + fiber_slope * (x - centroid[0])
@@ -112,7 +116,7 @@ def get_fibers(evx, evy, masks, fa):
 def process_dti(name, mag, evx, evy, fa):
     result = DtiFiber(name)
     result.roi = get_roi(mag)
-    result.masks = get_masks(result.roi)
+    result.masks = get_masks(result.roi, 256)
     result.fibers = get_fibers(evx, evy, result.masks, fa)
     return result
 

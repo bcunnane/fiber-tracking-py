@@ -1,4 +1,4 @@
-[Home](https://bcunnane.github.io/) • [Repository](https://github.com/bcunnane/fiber-tracking-py) • [Draft Paper](JMRI draft.pdf)
+[Home](https://bcunnane.github.io/) • [Repository](https://github.com/bcunnane/fiber-tracking-py) • [Draft Paper](files/JMRI_draft.pdf)
 
 This project develops MRI image processing methods to study muscle fiber strains in the medial gastrocnemius (MG) of the human calf. Specifically, it examines the effects of different ankle angles and exertion levels to identify the dependence of muscle force on muscle architecture.
 
@@ -29,10 +29,10 @@ The endpoints of the DTI-identified muscle fibers were tracked through each fram
 
 ### Statistical Analysis and Results
 Normality of data was tested using both the Shapiro-Wilk test and visual inspection of Q-Q plots. Fiber strain and normalized fiber strains were normally distributed.
-Two-way factorial ANOVA assessed differences between ankle angles and % MVC, as well as potential interaction effects. In case of significant ANOVA results for the factor ‘ankle angles’, Bonferroni-adjusted paired t-tests were used for post hoc analyses. Table 1a lists the mean and standard deviation (over all subjects) of MVC, MVC torque, peak force, peak torque, fiber strain, and normalized fiber strain for each foot position and % MVC.
+Two-way factorial ANOVA assessed differences between ankle angles and % MVC, as well as potential interaction effects. In case of significant ANOVA results for the factor ‘ankle angles’, Bonferroni-adjusted paired t-tests were used for post hoc analyses. Table 1a lists the mean and standard deviation (over all subjects) of MVC, MVC torque, peak force, peak torque, fiber strain, and normalized fiber strain for each foot position and % MVC.   
 ![Table 1a](files/Table 1a.PNG)
 
-Fiber lengths and pennation angles at rest and peak contraction were not normally distributed, therefore, non-parametric testing was used. The Mann-Whitney U-test was used to compare the %MVC. Kruskal-Wallis tests were used to compare the ankle angles. Bonferroni-adjusted U-tests were also used for the post-hoc analysis. Table 1b lists the median and interquartile range (over all subjects) of fiber architecture (length and pennation angle) at rest and at peak contraction.
+Fiber lengths and pennation angles at rest and peak contraction were not normally distributed, therefore, non-parametric testing was used. The Mann-Whitney U-test was used to compare the %MVC. Kruskal-Wallis tests were used to compare the ankle angles. Bonferroni-adjusted U-tests were also used for the post-hoc analysis. Table 1b lists the median and interquartile range (over all subjects) of fiber architecture (length and pennation angle) at rest and at peak contraction.   
 ![Table 1b](files/Table 1b.PNG)
 
 ### Discussion

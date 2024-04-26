@@ -2,9 +2,9 @@ import shelve
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import statsmodels.api as sm
-import scipy.stats as stats
-from statsmodels.formula.api import ols
+# import statsmodels.api as sm
+# import scipy.stats as stats
+# from statsmodels.formula.api import ols
 
 
 def import_data():
@@ -193,7 +193,7 @@ def fiber_cycle_plot(subject, angs, lens, strains):
     i = 1
     posn = 'D N P'
     plt.figure(figsize=(9,9))
-    for p in [0,2,4]:
+    for p in [4,2,0]:
         
         # plot delta angle
         plt.subplot(3,3,i)
@@ -225,7 +225,6 @@ def fiber_cycle_plot(subject, angs, lens, strains):
     # save plot as image
     plt.tight_layout()
     plt.savefig(subject + ' plots.png')
-    plt.show()
 
 
 
@@ -238,14 +237,6 @@ rslt = interpret_data(data)
 #p_mvc = stats_mvc(data['mvc'])
 
 # plots
-for i in range(0,36,6):
-    # fiber_cycle_plot(data['id'][i][:9], data['angs'][i:i+6,:,:],
-    #                  data['lens'][i:i+6,:,:], data['strains'][i:i+6,:,:])
-    
-    
-    
-
-
-
-
-
+for i in [30]:#in range(0,36,6):
+    fiber_cycle_plot(data['id'][i][:9], data['angs'][i:i+6,:,:],
+                     data['lens'][i:i+6,:,:], data['strains'][i:i+6,:,:])

@@ -16,7 +16,8 @@ def main():
             'fibers':np.zeros((36,6,2)),
             'xs':np.zeros((36,6,22)),
             'ys':np.zeros((36,6,22)),
-            'ma':np.zeros(36)
+            'ma':np.zeros(36),
+            'roi':[]
     }
     
     # process fiber-track mat file
@@ -33,6 +34,7 @@ def main():
         data['xs'][i,:,:] = mat['data']['xs'][0][i]
         data['ys'][i,:,:] = mat['data']['ys'][0][i]
         data['ma'][i] = mat['data']['ma'][0][i][0][0]
+
     
     # shelve data
     shelf_file = shelve.open('fiber-track-data-py')
