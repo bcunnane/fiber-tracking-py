@@ -1,9 +1,13 @@
-This project develops MRI image processing methods to study strain in the medial gastrocnemius (MG) muscle of the human calf. Specifically, it examines the effects of different ankle angles and exertion levels to identify the dependence of muscle force on muscle architecture. It was published in [Nature's Scientific Reports](https://www.nature.com/articles/s41598-023-41127-z).
+[Return home](https://bcunnane.github.io/)
+
+This project develops MRI image processing methods to study strain in the medial gastrocnemius (MG) muscle of the human calf. Specifically, it examines the effects of different ankle angles and exertion levels to identify the dependence of muscle force on muscle architecture.
+
+It was published in [Nature's Scientific Reports](https://www.nature.com/articles/s41598-023-41127-z).
 
 # Collect Data
 Data was collected for 6 subjects in a 1.5T MRI scanner as shown in Figures 1 and 2. The subject’s foot was positioned in a foot pedal fixture that recorded their pressing force. A projector prompted them to repeatedly press the pedal at a certain percentage of their maximum voluntary contraction (% MVC). This procedure was repeated for high (50% MVC) and low (25% MVC) pressing forces at three foot positions: dorsiflexion (D), low plantar flexio (PL), and high plantar flexion (PH). Several different MRI sequences were utilzed to collect different image types, including:
-1. Large field of view images to measure the subject's ankle position (see Figure 3)
-2. High-resolution images to scout for a slice with clear fibers (see Figure 5)
+1. Large FOV images to measure subject's ankle position (see Figure 3)
+2. High-res images to scout for slice with clear fibers (see Figure 5)
 3. Diffusion Tensor images for the chosen slice (see Figure 4)
 4. Dynamic (i.e. video) velocity images for the chosen slice (see Figure 6)
 
@@ -40,7 +44,7 @@ Two-way factorial ANOVA assessed differences between ankle angles and % MVC, as 
 
 Fiber lengths and pennation angles at rest and peak contraction were not normally distributed, therefore, non-parametric testing was used. The Mann-Whitney U-test was used to compare the %MVC. Kruskal-Wallis tests were used to compare the ankle angles. Bonferroni-adjusted U-tests were also used for the post-hoc analysis. Table 1b lists the median and interquartile range (over all subjects) of fiber architecture (length and pennation angle) at rest and at peak contraction.
 
-### Discussion
+# Discussion
 The dorsiflexed ankle position showed significantly lower normalized strains at both %MVCs than the normal and plantarflexed ankle positions. This demonstrates that the dorsiflexed ankle position is at the optimum position for force production, followed by low plantar flexioni, then high plantar flexion. Dorsiflexion producing a high force with low strain could be of interest in rehabilitation paradigms and in optimizing athletic performance. Strain injury in skeletal muscle occurs when regions of a muscle experience localized strains that exceeds a threshold, so dorsiflexion yeilding overall lower strains indicates that high regional strains exceeding the threshold are less likely than in the plantarflexed positions.
 
 In addition, strain increased less than linearly with %MVC. This departure from linearity is most pronounced in the high plantarflexed ankle position, implying that with increasing contraction required to generate higher forces, the MG muscle may be approaching the critical length where further contraction becomes more difficult.
