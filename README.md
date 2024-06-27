@@ -29,7 +29,7 @@ Diffusion tensors are calculated from the diffusion images. Since the primary di
 ![Muscle Fiber image](files/Fibers.png)
 > *Figure 5. The fibers identified by the proposed method using the DTI leading eigenvector data are shown in blue dashed lines in the proximal, middle, and distal regions of the muscle superposed on the high-resolution images. A few fascicles in the MG can be seen in white and are approximately aligned with the DTI derived fibers (identified by blue arrows). It can be seen that not many fascicles are visible in the MG while the proposed technique using DTI is effective in identifying the muscle fibers.*
 
-# Track Muscle Fibers and Analyze Changes
+# Track and Analyze Muscle Fibers
 The endpoints of the DTI-identified muscle fibers were tracked through each frame of the dynamic study (see Figure 6). Changes in fiber angle were calculated with respect to the vertical in the image. Changes in fiber length were calculated with respect to initial length, leading to changes in Lagrangian strain. The results of the three muscle fibers were averaged together (see Figure 7). 
 
 ![Fiber Gif](files/Supplemental_Video.gif)
